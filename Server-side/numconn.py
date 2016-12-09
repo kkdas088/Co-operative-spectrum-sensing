@@ -12,6 +12,5 @@ class conn(object):
         self.chbw=200e3
         self.aconn=0
         self.time=60
-        self.addra='192.168.20.2'
-        self.addrb='192.168.30.2'
+        
       

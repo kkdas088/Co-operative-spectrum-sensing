@@ -89,3 +89,4 @@ ENV/
 .ropeproject
 # Stop databases
 
+*.db

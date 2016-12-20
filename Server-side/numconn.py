@@ -4,7 +4,7 @@ class conn(object):
 
     def __init__(self):
 
-        self.conn=2
+        self.conn=1
         self.minfreq=590e6
         self.maxfreq=600e6
         self.samprate=5e6

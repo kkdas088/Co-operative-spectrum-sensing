@@ -4,13 +4,13 @@ class conn(object):
 
     def __init__(self):
 
-        self.conn=1
+        self.conn=2
         self.minfreq=590e6
         self.maxfreq=600e6
         self.samprate=5e6
         self.gain=19.0
         self.chbw=200e3
         self.aconn=0
-        self.addr = ['192.168.20.2', '192.168.30.2']
+        #self.addr = ['192.168.20.2', '192.168.30.2']
         
       

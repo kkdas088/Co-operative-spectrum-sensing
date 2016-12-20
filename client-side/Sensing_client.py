@@ -21,7 +21,7 @@ class open_port(object):
         #self.server_address = ('localhost',16000)
         print  'connecting to %s port %s\n' % self.server_address
         self.sock.connect(self.server_address)
-        self.data="";self.params=""
+        self.data="";self.paramslist=[]
         
  
     def prompt(self):
@@ -31,7 +31,7 @@ class open_port(object):
 
     def intiate_sensing(self):
         print "intiating TX module"
-        params = pickle.loads(self.params);print "Min freq", params.minfreq; print "max freq", params.maxfreq
+        params = pickle.loads(self.paramslist.pop());print "Min freq", params.minfreq; print "max freq", params.maxfreq
         subprocess.call("./spec_sense.py  %r  %r --samp-rate %d --gain %d "%(params.minfreq,params.maxfreq,params.samprate,params.gain), shell=True)
         print "\n ***********************Sensing performed according to data but transmission not done %s******************************\n"%(self.data)
         return
@@ -67,7 +67,7 @@ def main():
                             op.intiate_sensing()
                         
                         else:
-                            sys.stdout.write('Other than sensing\n');op.params=op.data
+                            sys.stdout.write('Other than sensing\n');op.paramslist.append(op.data)
                         sys.stdout.write('\n')    
                         op.prompt()
              

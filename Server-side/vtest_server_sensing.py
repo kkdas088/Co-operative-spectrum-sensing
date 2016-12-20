@@ -48,14 +48,14 @@ class server_open_port(object):
             data = clientsock.recv(BUFF)
             if not data: break
             print repr(addr) + ' recv:' + repr(data)
+            para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params')
             print 'Number of actual connections',numconn.aconn
             checker = bool(numconn.aconn is not numconn.conn);print checker
             while numconn.aconn!=numconn.conn:
                 time.sleep(0.1)   
             else:
-                para_string=pickle.dumps(numconn);print 'Serialized object', para_string
-                clientsock.send('sense'+','+para_string)
-                print repr(addr) + ' sent:' + repr('sense + params')
+                clientsock.send('sense')
+                print repr(addr) + ' sent:' + repr('sense')
                
             if "close" == data.rstrip(): break # type 'close' on client console to close connection from the server side
 

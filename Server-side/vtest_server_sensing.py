@@ -4,7 +4,7 @@ from gnuradio import gr, digital
 from gnuradio import eng_notation
 from gnuradio.eng_option import eng_option
 from optparse import OptionParser
-from numconn import *
+from numconn import conn
 
 import os, sys
 import random, time, struct
@@ -52,7 +52,7 @@ class server_open_port(object):
             while numconn.aconn!=numconn.conn:
                 time.sleep(0.1)   
             else:
-                para_string=pickle.dumps(numconn)
+                para_string=pickle.dumps(numconn);print 'Serialized object', para_string
                 clientsock.send('sense'+','+para_string)
                 print repr(addr) + ' sent:' + repr('sense + params')
                

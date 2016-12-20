@@ -11,6 +11,6 @@ class conn(object):
         self.gain=19.0
         self.chbw=200e3
         self.aconn=0
-        #self.addr = ['192.168.20.2', '192.168.30.2']
+        
         
       

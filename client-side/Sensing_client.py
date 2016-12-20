@@ -32,7 +32,7 @@ class open_port(object):
     def intiate_sensing(self):
         print "intiating TX module"
         w,string_recv=self.data.split(",")
-        params = pickle.loads(string_recv)
+        params = pickle.loads(string_recv);print "Min freq", params.minfreq; print "max freq", params.maxfreq
         subprocess.call("./spec_sense.py  %r  %r --samp-rate %d --gain %d "%(params.minfreq,params.maxfreq,params.samprate,params.gain), shell=True)
         print "\n ***********************Sensing performed according to data but transmission not done %s******************************\n"%(self.data)
         return

@@ -43,7 +43,6 @@ class server_open_port(object):
         return 'Server response: ' + 'Wait'
 
     def handler(self,clientsock,addr):
-        global numconn
         while 1:
             data = clientsock.recv(BUFF)
             if not data: break

@@ -11,6 +11,7 @@ class conn(object):
         self.gain=19.0
         self.chbw=200e3
         self.aconn=0
+        self.addr=""
         
         
       

@@ -4,12 +4,12 @@ class conn(object):
 
     def __init__(self):
 
-        self.conn=2
-        self.minfreq=590e6
-        self.maxfreq=600e6
-        self.samprate=5e6
-        self.gain=19.0
-        self.chbw=200e3
+        self.conn=0
+        self.minfreq=0
+        self.maxfreq=0
+        self.samprate=0
+        self.gain=0
+        self.chbw=0
         self.aconn=0
         
         

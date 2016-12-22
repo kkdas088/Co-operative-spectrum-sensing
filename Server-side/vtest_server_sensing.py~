@@ -19,11 +19,11 @@ import socket
 import select
 import Queue
 import cPickle as pickle
+import pprint
 
-global numconn,e,BUFF
+global numconn,BUFF,usrp_address
 numconn = conn() 
-e=threading.Event() 
-BUFF=4096
+BUFF=4096;usrp_address=['addr=192.168.30.2', 'addr=192.168.20.2']
 
 class server_open_port(object):
     
@@ -43,18 +43,20 @@ class server_open_port(object):
         return 'Server response: ' + 'Wait'
 
     def handler(self,clientsock,addr):
+        global numconn,usrp_address
         while 1:
             data = clientsock.recv(BUFF)
             if not data: break
-            print repr(addr) + ' recv:' + repr(data)
-            print 'Number of actual connections',numconn.aconn
+            print repr(addr) + ' recv:' + repr(data);print 'numconn bfor Serialization'; pprint.pprint(data)
+            print 'Number of actual connections',numconn.aconn;
+            numconn.addr=usrp_address[numconn.aconn-1]
+            para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params');pprint.pprint(para_string)
             checker = bool(numconn.aconn is not numconn.conn);print checker
             while numconn.aconn!=numconn.conn:
                 time.sleep(0.1)   
             else:
-                para_string=pickle.dumps(numconn);print 'Serialized object', para_string
-                clientsock.send('sense'+','+para_string)
-                print repr(addr) + ' sent:' + repr('sense + params')
+                clientsock.send('sense')
+                print repr(addr) + ' sent:' + repr('sense')
                
             if "close" == data.rstrip(): break # type 'close' on client console to close connection from the server side
 

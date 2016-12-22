@@ -21,9 +21,9 @@ import Queue
 import cPickle as pickle
 import pprint
 
-global numconn,BUFF
+global numconn,BUFF,usrp_address
 numconn = conn() 
-BUFF=4096
+BUFF=4096;usrp_address=['addr=192.168.30.2', 'addr=192.168.20.2']
 
 class server_open_port(object):
     
@@ -43,13 +43,14 @@ class server_open_port(object):
         return 'Server response: ' + 'Wait'
 
     def handler(self,clientsock,addr):
-        global numconn
+        global numconn,usrp_address
         while 1:
             data = clientsock.recv(BUFF)
             if not data: break
             print repr(addr) + ' recv:' + repr(data);print 'numconn bfor Serialization'; pprint.pprint(data)
+            print 'Number of actual connections',numconn.aconn;
+            numconn.addr=usrp_address[numconn.aconn-1]
             para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params');pprint.pprint(para_string)
-            print 'Number of actual connections',numconn.aconn
             checker = bool(numconn.aconn is not numconn.conn);print checker
             while numconn.aconn!=numconn.conn:
                 time.sleep(0.1)   

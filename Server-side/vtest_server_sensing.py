@@ -19,10 +19,10 @@ import socket
 import select
 import Queue
 import cPickle as pickle
+import pprint
 
-global numconn,e,BUFF
+global numconn,BUFF
 numconn = conn() 
-e=threading.Event() 
 BUFF=4096
 
 class server_open_port(object):
@@ -47,8 +47,8 @@ class server_open_port(object):
         while 1:
             data = clientsock.recv(BUFF)
             if not data: break
-            print repr(addr) + ' recv:' + repr(data)
-            para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params')
+            print repr(addr) + ' recv:' + repr(data);print 'numconn bfor Serialization'; pprint.pprint(data)
+            para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params');pprint.pprint(para_string)
             print 'Number of actual connections',numconn.aconn
             checker = bool(numconn.aconn is not numconn.conn);print checker
             while numconn.aconn!=numconn.conn:

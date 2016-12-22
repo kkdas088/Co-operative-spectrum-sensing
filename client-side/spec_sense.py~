@@ -43,7 +43,7 @@ import time
 import subprocess
 import sqlite3
 import os 
-from  numconn import conn
+import numconn from conn
 
 # logging format 
 

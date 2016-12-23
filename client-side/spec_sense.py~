@@ -43,7 +43,7 @@ import time
 import subprocess
 import sqlite3
 import os 
-import numconn from conn
+from  numconn import conn
 
 # logging format 
 
@@ -293,8 +293,7 @@ def main_loop(tb):
     logging.debug("entered Main looop")
     db_filename ='spec.db'
     schema_filename = 'spectable.sql'
-    schema_flname ='chseltable.sql'
-    db_chsel_filename ='chsel.db'
+   
     def bin_freq(i_bin, center_freq):
         #hz_per_bin = tb.usrp_rate / tb.fft_size
         freq = center_freq - (tb.usrp_rate / 2) + (tb.channel_bandwidth * i_bin)

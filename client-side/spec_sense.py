@@ -293,8 +293,7 @@ def main_loop(tb):
     logging.debug("entered Main looop")
     db_filename ='spec.db'
     schema_filename = 'spectable.sql'
-    schema_flname ='chseltable.sql'
-    db_chsel_filename ='chsel.db'
+   
     def bin_freq(i_bin, center_freq):
         #hz_per_bin = tb.usrp_rate / tb.fft_size
         freq = center_freq - (tb.usrp_rate / 2) + (tb.channel_bandwidth * i_bin)
@@ -320,18 +319,6 @@ def main_loop(tb):
         
             conn.executescript(schema)
             
-            with sqlite3.connect(db_chsel_filename,isolation_level = isolationlevels) as conn1:
-            
-              
-                print "creating schema for chsel"
-                
-                with open(schema_flname,'rt') as g:
-                    schema_csl = g.read()
-    
-                conn1.executescript(schema_csl)
-        
-            
-    
          
         conn.row_factory = sqlite3.Row
         cursor= conn.cursor()
@@ -345,18 +332,7 @@ def main_loop(tb):
                 print"updating"
             else:
                 print"inserting"
-                
-        if row[0]>0:
-            pass
-            
-        else:        
-        
-            conn1.row_factory =sqlite3.Row
-            cursr =conn1.cursor()
-                
-                
-        
-            
+                       
         nsteps=tb.nsteps
         
         while (nsteps>0):
@@ -369,7 +345,6 @@ def main_loop(tb):
             # m.raw_data is a string that contains the binary floats.
             # You could write this as binary to a file.
             
-            querychsel ="""insert into chsel(centfreq,sel) values (?,?)"""
             querybusy="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,status) values(?,?,?,?,'Busy')"""
             queryavail="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,status) values(?,?,?,?,'Available')"""
             querybusyupdate ="""update spec set status='Busy',pwdbm=? where stfreq=?"""

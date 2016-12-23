@@ -349,7 +349,7 @@ def main_loop(tb):
             # You could write this as binary to a file.
             
             queryinsert="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,addr,time) values(?,?,?,?,?,?)"""
-            queryupdate ="""update spec pwdbm=?, time=? where stfreq=? and addr=?"""
+            queryupdate ="""update spec set pwdbm=?,time=? where stfreq=? and addr=?"""
   
             print "center frequency" ,m.center_freq
             for i_bin in range(bin_start, bin_stop):

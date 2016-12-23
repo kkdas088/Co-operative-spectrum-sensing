@@ -43,6 +43,7 @@ import time
 import subprocess
 import sqlite3
 import os 
+import datetime
 from  numconn import conn
 
 # logging format 
@@ -347,8 +348,8 @@ def main_loop(tb):
             # m.raw_data is a string that contains the binary floats.
             # You could write this as binary to a file.
             
-            queryinsert="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,addr) values(?,?,?,?,?)"""
-            queryupdate ="""update spec pwdbm=? where stfreq=? and addr=?"""
+            queryinsert="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,addr,time) values(?,?,?,?,?,?)"""
+            queryupdate ="""update spec pwdbm=?, time=? where stfreq=? and addr=?"""
   
             print "center frequency" ,m.center_freq
             for i_bin in range(bin_start, bin_stop):
@@ -376,11 +377,11 @@ def main_loop(tb):
                
                                                            
                 if (row[0]>0):
-                        
-                    conn.execute(queryupdate,(pwdbm,stfreq,))
+                    right_now = datetime.datetime.now()    
+                    conn.execute(queryupdate,(pwdbm,right_now,stfreq,tb.address))
                 else:
-                        
-                    conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address))
+                    right_now = datetime.datetime.now()    
+                    conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address,right_now))
             
               
                     
@@ -405,14 +406,12 @@ if __name__ == '__main__':
     
     try:
         Main_Data().Inf_run()
-        
-        
+          
     except KeyboardInterrupt:
         command ="rm spec.db"
-        command1 ="rm chsel.db"
         logging.debug("after interrupt")
         subprocess.call(command,shell=True)
-        subprocess.call(command1,shell=True)
+
         
         
         

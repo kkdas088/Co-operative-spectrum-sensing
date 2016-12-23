@@ -53,7 +53,7 @@ class server_open_port(object):
             para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params');pprint.pprint(para_string)
             checker = bool(numconn.aconn is not numconn.conn);print checker
             while numconn.aconn!=numconn.conn:
-                time.sleep(0.1)   
+                time.sleep(0.0001)   
             else:
                 clientsock.send('sense')
                 print repr(addr) + ' sent:' + repr('sense')

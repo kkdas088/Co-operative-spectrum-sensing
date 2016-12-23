@@ -4,5 +4,6 @@ stfreq integer,
 enfreq integer,
 ctfreq integer,
 pwdbm integer,
-addr text
+addr text,
+time text
  );

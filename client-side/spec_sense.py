@@ -154,7 +154,7 @@ class my_top_block(gr.top_block):
 
 
         
-        print 'options gain', options.gain
+ 
 
         if self.min_freq > self.max_freq:
             # swap them
@@ -173,6 +173,8 @@ class my_top_block(gr.top_block):
 
         # build graph
         d = uhd.find_devices(uhd.device_addr(options.args))
+     
+        self.address = options.args
         
         self.u = uhd.usrp_source(device_addr=options.args,
                                  stream_args=uhd.stream_args('fc32'))
@@ -345,10 +347,9 @@ def main_loop(tb):
             # m.raw_data is a string that contains the binary floats.
             # You could write this as binary to a file.
             
-            querybusy="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,status) values(?,?,?,?,'Busy')"""
-            queryavail="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,status) values(?,?,?,?,'Available')"""
-            querybusyupdate ="""update spec set status='Busy',pwdbm=? where stfreq=?"""
-            queryavailupdate ="""update spec set status='Available',pwdbm=? where stfreq=?"""          
+            queryinsert="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,addr) values(?,?,?,?,?)"""
+            queryupdate ="""update spec pwdbm=? where stfreq=? and addr=?"""
+  
             print "center frequency" ,m.center_freq
             for i_bin in range(bin_start, bin_stop):
                         
@@ -370,33 +371,18 @@ def main_loop(tb):
                 pwdbm = power_dbm
                 a = power_dbm - noise_floor_dbm
                # print "Power - Noise = ", a
-                if (row[0]>0):
-                    
-                    pass
-                    
-                else:
-                   
-                    conn1.execute(querychsel,(ctfreq,seltxt))
-                    conn1.commit()
+               
                 
-                if ((power_dbm - noise_floor_dbm) > tb.squelch_threshold):
+               
                                                            
-                    if (row[0]>0):
+                if (row[0]>0):
                         
-                        conn.execute(querybusyupdate,(pwdbm,stfreq,))
-                    else:
-                        
-                        conn.execute(querybusy,(stfreq,enfreq,ctfreq,pwdbm))
-            
+                    conn.execute(queryupdate,(pwdbm,stfreq,))
                 else:
-                                                            
-                    if (row[0]>0):
                         
-                        conn.execute(queryavailupdate,(pwdbm,stfreq,))
-                    else:
-                        
-                        conn.execute(queryavail,(stfreq,enfreq,ctfreq,pwdbm))
+                    conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address))
             
+              
                     
                     
                  
@@ -419,14 +405,12 @@ if __name__ == '__main__':
     
     try:
         Main_Data().Inf_run()
-        
-        
+          
     except KeyboardInterrupt:
         command ="rm spec.db"
-        command1 ="rm chsel.db"
         logging.debug("after interrupt")
         subprocess.call(command,shell=True)
-        subprocess.call(command1,shell=True)
+
         
         
         

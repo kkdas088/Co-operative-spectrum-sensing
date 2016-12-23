@@ -1,8 +1,9 @@
-create table spec(
+create table spec1(
 Chno integer PRIMARY KEY AUTOINCREMENT,
 stfreq integer,
 enfreq integer,
 ctfreq integer,
 pwdbm integer,
-status text
+addr text,
+time text
  );

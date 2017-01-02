@@ -45,6 +45,7 @@ import sqlite3
 import os 
 import datetime
 from  numconn import conn
+import socket
 
 # logging format 
 
@@ -141,6 +142,9 @@ class my_top_block(gr.top_block):
                           help="specify number of FFT bins [default=samp_rate/channel_bw]")
         parser.add_option("", "--real-time", action="store_true", default=False,
                           help="Attempt to enable real-time scheduling")
+
+        parser.add_option("-t", "--socket", type="string", default="RX2",
+                          help="socket for read and write operation")
 
         (options, args) = parser.parse_args()
         if len(args) != 2:

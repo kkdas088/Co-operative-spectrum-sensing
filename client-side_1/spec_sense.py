@@ -143,7 +143,7 @@ class my_top_block(gr.top_block):
         parser.add_option("", "--real-time", action="store_true", default=False,
                           help="Attempt to enable real-time scheduling")
 
-        parser.add_option("-t", "--socket", type="string", default="RX2",
+        parser.add_option("-t", "--socket", type="int", default=None,
                           help="socket for read and write operation")
 
         (options, args) = parser.parse_args()
@@ -156,6 +156,8 @@ class my_top_block(gr.top_block):
 
         self.min_freq = eng_notation.str_to_num(args[0])
         self.max_freq = eng_notation.str_to_num(args[1])
+
+        self.socket = options.socket
 
 
         
@@ -329,7 +331,7 @@ def main_loop(tb):
          
         conn.row_factory = sqlite3.Row
         cursor= conn.cursor()
-        cursor.execute("select count(stfreq) from spec")
+        cursor.execute("select count(stfreq) from spec1")
         
        
         
@@ -352,8 +354,8 @@ def main_loop(tb):
             # m.raw_data is a string that contains the binary floats.
             # You could write this as binary to a file.
             
-            queryinsert="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,addr,time) values(?,?,?,?,?,?)"""
-            queryupdate ="""update spec set pwdbm=?,time=? where stfreq=? and addr=?"""
+            queryinsert="""insert into spec1(stfreq,enfreq,ctfreq,pwdbm,addr,time) values(?,?,?,?,?,?)"""
+            queryupdate ="""update spec1 set pwdbm=?,time=? where stfreq=? and addr=?"""
   
             print "center frequency" ,m.center_freq
             for i_bin in range(bin_start, bin_stop):
@@ -412,9 +414,9 @@ if __name__ == '__main__':
         Main_Data().Inf_run()
           
     except KeyboardInterrupt:
-        command ="rm spec.db"
+        #command ="rm spec.db"
         logging.debug("after interrupt")
-        subprocess.call(command,shell=True)
+        #subprocess.call(command,shell=True)
 
         
         

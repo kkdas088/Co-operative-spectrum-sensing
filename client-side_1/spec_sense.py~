@@ -45,6 +45,7 @@ import sqlite3
 import os 
 import datetime
 from  numconn import conn
+import socket
 
 # logging format 
 
@@ -141,6 +142,9 @@ class my_top_block(gr.top_block):
                           help="specify number of FFT bins [default=samp_rate/channel_bw]")
         parser.add_option("", "--real-time", action="store_true", default=False,
                           help="Attempt to enable real-time scheduling")
+
+        parser.add_option("-t", "--socket", type="int", default=None,
+                          help="socket for read and write operation")
 
         (options, args) = parser.parse_args()
         if len(args) != 2:
@@ -325,7 +329,7 @@ def main_loop(tb):
          
         conn.row_factory = sqlite3.Row
         cursor= conn.cursor()
-        cursor.execute("select count(stfreq) from spec")
+        cursor.execute("select count(stfreq) from spec1")
         
        
         
@@ -348,8 +352,8 @@ def main_loop(tb):
             # m.raw_data is a string that contains the binary floats.
             # You could write this as binary to a file.
             
-            queryinsert="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,addr,time) values(?,?,?,?,?,?)"""
-            queryupdate ="""update spec pwdbm=?, time=? where stfreq=? and addr=?"""
+            queryinsert="""insert into spec1(stfreq,enfreq,ctfreq,pwdbm,addr,time) values(?,?,?,?,?,?)"""
+            queryupdate ="""update spec1 set pwdbm=?,time=? where stfreq=? and addr=?"""
   
             print "center frequency" ,m.center_freq
             for i_bin in range(bin_start, bin_stop):
@@ -408,9 +412,9 @@ if __name__ == '__main__':
         Main_Data().Inf_run()
           
     except KeyboardInterrupt:
-        command ="rm spec.db"
+        #command ="rm spec.db"
         logging.debug("after interrupt")
-        subprocess.call(command,shell=True)
+        #subprocess.call(command,shell=True)
 
         
         

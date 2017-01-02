@@ -45,6 +45,7 @@ import sqlite3
 import os 
 import datetime
 from  numconn import conn
+import socket
 
 # logging format 
 
@@ -141,6 +142,8 @@ class my_top_block(gr.top_block):
                           help="specify number of FFT bins [default=samp_rate/channel_bw]")
         parser.add_option("", "--real-time", action="store_true", default=False,
                           help="Attempt to enable real-time scheduling")
+        parser.add_option("-t", "--socket", type="int", default=None,
+                          help="socket for read and write operation")
 
         (options, args) = parser.parse_args()
         if len(args) != 2:
@@ -153,7 +156,9 @@ class my_top_block(gr.top_block):
         self.min_freq = eng_notation.str_to_num(args[0])
         self.max_freq = eng_notation.str_to_num(args[1])
 
+     
 
+        self.sd = socket.fromfd(options.socket,socket.AF_INET, socket.SOCK_STREAM) 
         
  
 
@@ -325,7 +330,7 @@ def main_loop(tb):
          
         conn.row_factory = sqlite3.Row
         cursor= conn.cursor()
-        cursor.execute("select count(stfreq) from spec")
+        cursor.execute("select count(stfreq) from spec2")
         
        
         
@@ -348,8 +353,8 @@ def main_loop(tb):
             # m.raw_data is a string that contains the binary floats.
             # You could write this as binary to a file.
             
-            queryinsert="""insert into spec(stfreq,enfreq,ctfreq,pwdbm,addr,time) values(?,?,?,?,?,?)"""
-            queryupdate ="""update spec pwdbm=?, time=? where stfreq=? and addr=?"""
+            queryinsert="""insert into spec2(stfreq,enfreq,ctfreq,pwdbm,addr,time) values(?,?,?,?,?,?)"""
+            queryupdate ="""update spec2 set pwdbm=?,time=? where stfreq=? and addr=?"""
   
             print "center frequency" ,m.center_freq
             for i_bin in range(bin_start, bin_stop):
@@ -382,8 +387,12 @@ def main_loop(tb):
                 else:
                     right_now = datetime.datetime.now()    
                     conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address,right_now))
-            
-              
+
+                
+
+                tb.sd.send("to the server from client side 2")
+
+                
                     
                     
                  
@@ -408,9 +417,9 @@ if __name__ == '__main__':
         Main_Data().Inf_run()
           
     except KeyboardInterrupt:
-        command ="rm spec.db"
+        #command ="rm spec.db"
         logging.debug("after interrupt")
-        subprocess.call(command,shell=True)
+        #subprocess.call(command,shell=True)
 
         
         

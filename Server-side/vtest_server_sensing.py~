@@ -47,7 +47,7 @@ class server_open_port(object):
         while 1:
             data = clientsock.recv(BUFF)
             if not data: break
-            print repr(addr) + ' recv:' + repr(data);print 'numconn bfor Serialization'; pprint.pprint(data)
+            print repr(addr) + ' recv:' + repr(data)
             print 'Number of actual connections',numconn.aconn;
             numconn.addr=usrp_address[numconn.aconn-1]
             para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params');pprint.pprint(para_string)

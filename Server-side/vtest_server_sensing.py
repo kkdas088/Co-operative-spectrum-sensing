@@ -50,7 +50,7 @@ class server_open_port(object):
             print repr(addr) + ' recv:' + repr(data)
             print 'Number of actual connections',numconn.aconn;
             numconn.addr=usrp_address[numconn.aconn-1]
-            para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params');pprint.pprint(para_string)
+            para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params')
             checker = bool(numconn.aconn is not numconn.conn);print checker
             while numconn.aconn!=numconn.conn:
                 time.sleep(0.0001)   

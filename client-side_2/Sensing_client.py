@@ -32,7 +32,7 @@ class open_port(object):
     def intiate_sensing(self):
         print "intiating TX module"
         params = pickle.loads(self.paramslist.pop());print "After de serialization, USRP address", params.addr
-        subprocess.call("./spec_sense.py  %r  %r --args %s --samp-rate %d --gain %d "%(params.minfreq,params.maxfreq,params.addr,params.samprate,params.gain), shell=True)
+        subprocess.call("./spec_sense.py  %r  %r --args %s --samp-rate %d --gain %d --socket %s"%(params.minfreq,params.maxfreq,params.addr,params.samprate,params.gain, self.sock), shell=True)
         print "\n ***********************Sensing performed according to data but transmission not done %s******************************\n"%(self.data)
         return
 

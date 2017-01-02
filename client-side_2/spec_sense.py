@@ -390,7 +390,7 @@ def main_loop(tb):
 
                 
 
-                tb.sd.send(".")
+                tb.sd.send("c2")
 
                 
                     

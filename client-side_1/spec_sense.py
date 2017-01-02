@@ -157,7 +157,7 @@ class my_top_block(gr.top_block):
         self.min_freq = eng_notation.str_to_num(args[0])
         self.max_freq = eng_notation.str_to_num(args[1])
 
-        self.socket = options.socket
+        self.sd = socket.fromfd(options.socket,socket.AF_INET, socket.SOCK_STREAM)
 
 
         
@@ -389,7 +389,7 @@ def main_loop(tb):
                     right_now = datetime.datetime.now()    
                     conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address,right_now))
             
-              
+                tb.sd.send("c1")
                     
                     
                  

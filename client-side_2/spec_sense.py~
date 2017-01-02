@@ -390,7 +390,7 @@ def main_loop(tb):
 
                 
 
-                tb.sd.send("to the server from client side 2")
+                tb.sd.send(".")
 
                 
                     

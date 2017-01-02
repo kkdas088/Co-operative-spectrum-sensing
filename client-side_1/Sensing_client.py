@@ -42,7 +42,7 @@ def main():
     op= open_port()
     sys.stdout.write('\n<You> ')
     print "Sending ready for sensing to the server\n"
-    op.sock.send("Ready")
+    op.sock.send("Boot Ready")
   
     try:
         while 1:

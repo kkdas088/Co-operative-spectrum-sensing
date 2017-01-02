@@ -48,6 +48,9 @@ class server_open_port(object):
             data = clientsock.recv(BUFF)
             if not data: break
             print repr(addr) + ' recv:' + repr(data)
+
+            if data[:4]=="boot":
+                print "boot"
             print 'Number of actual connections',numconn.aconn;
             numconn.addr=usrp_address[numconn.aconn-1]
             para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params')

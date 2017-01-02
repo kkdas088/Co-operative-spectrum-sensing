@@ -67,7 +67,7 @@ def main():
                             op.intiate_sensing()
                         
                         else:
-                            sys.stdout.write('Other than sensing\n');op.paramslist.append(op.data);print "Bfor deserialization";pprint.pprint(op.data) 
+                            sys.stdout.write('Other than sensing\n');op.paramslist.append(op.data)
                         sys.stdout.write('\n')    
                         op.prompt()
              

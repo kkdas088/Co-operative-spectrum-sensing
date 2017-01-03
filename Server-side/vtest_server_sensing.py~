@@ -47,21 +47,23 @@ class server_open_port(object):
         while 1:
             data = clientsock.recv(BUFF)
             if not data: break
-            print repr(addr) + ' recv:' + repr(data)
-
-            if data[:5]=="boot":
-                print "boot"
-            print 'Number of actual connections',numconn.aconn;
-            numconn.addr=usrp_address[numconn.aconn-1]
-            para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params')
-            checker = bool(numconn.aconn is not numconn.conn);print checker
-            while numconn.aconn!=numconn.conn:
-                time.sleep(0.0001)   
-            else:
-                clientsock.send('sense')
-                print repr(addr) + ' sent:' + repr('sense')
+            if data[:4]=="Boot":
+                print repr(addr) + ' recv:' + repr(data)
+                print 'Number of actual connections',numconn.aconn;
+                numconn.addr=usrp_address[numconn.aconn-1]
+                para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params')
+                checker = bool(numconn.aconn is not numconn.conn);print checker
+                while numconn.aconn!=numconn.conn:
+                    time.sleep(0.0001)   
+                else:
+                    clientsock.send('sense')
+                    print repr(addr) + ' sent:' + repr('sense')
                
-            if "close" == data.rstrip(): break # type 'close' on client console to close connection from the server side
+                if "close" == data.rstrip(): break # type 'close' on client console to close connection from the server side
+
+            else:
+                print 'Database details\n'
+                print repr(addr) + ' recv:' + repr(data)
 
         clientsock.close();numconn.aconn-=1
         print addr, "- closed connection" #log on console

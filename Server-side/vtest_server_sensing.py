@@ -63,7 +63,7 @@ class server_open_port(object):
 
             else:
                 print 'Database details\n'
-                print repr(addr) + ' recv:' + repr(data)
+                print repr(addr) + ' recv:' + repr(data[:5])
 
         clientsock.close();numconn.aconn-=1
         print addr, "- closed connection" #log on console

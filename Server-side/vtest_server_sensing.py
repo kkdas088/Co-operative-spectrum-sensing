@@ -86,7 +86,7 @@ class server_open_port(object):
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
                 print 'Sensing data for client 2 updated' 
             else:
-                print repr(addr) + ' recv:'+ print(data[:5])   
+                print repr(addr) + ' recv:'+ repr(data[:5])
 
      
 

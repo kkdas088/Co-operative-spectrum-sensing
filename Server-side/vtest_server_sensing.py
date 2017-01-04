@@ -88,11 +88,11 @@ class server_open_port(object):
                 
                 if data[:5]=='c1new':
                     print 'Detected first attempt*****************************'; params = pickle.loads(data[5:]);
-                    print 'ctfreq',params.pop()
+                    print 'ctfreq',params.pop();print 'enfreq', params.pop();print 'Address', params.pop();print 'stfreq', params.pop();print 'time local', params.pop();print 'power dbm', params.pop()
                     
                 elif data[:5]=='c1old':
                     print 'update attempt*****************************'; params = pickle.loads(data[5:]);
-                    print 'Address', params.pop()
+                    print 'Address', params.pop();print 'stfreq', params.pop();print 'time local', params.pop();print 'power dbm', params.pop()
                 else:
                     print repr(addr) + ' recv:' + repr(data[:5])   
 

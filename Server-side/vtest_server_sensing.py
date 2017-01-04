@@ -22,9 +22,10 @@ import cPickle as pickle
 import pprint
 import datetime
 
-global numconn,BUFF,usrp_address,conn
+global numconn,BUFF,usrp_address,conn,isolationlevels,db_filename,schema_filename,addr
 numconn = conn() 
 BUFF=4096;usrp_address=['addr=192.168.30.2', 'addr=192.168.20.2']
+isolationlevels= 'IMMEDIATE'; db_filename ='sense.db';schema_filename = 'sensetable.sql'
 
 class server_open_port(object):
     
@@ -40,8 +41,8 @@ class server_open_port(object):
 
 
     def setupdb(self):
-        global conn
-        isolationlevels= 'IMMEDIATE'; db_filename ='sense.db';schema_filename = 'sensetable.sql'
+        global conn,isolationlevels,db_filename,schema_filename
+        
         db_is_new = not os.path.exists(db_filename)
     
         with sqlite3.connect(db_filename,isolation_level = isolationlevels) as conn:
@@ -56,13 +57,44 @@ class server_open_port(object):
 
             else:
                 print'Not reqd'
+
+    def updatedb(self,data):
+        global conn,isolationlevels,db_filename,schema_filename,addr
+        with sqlite3.connect(db_filename,isolation_level = isolationlevels) as conn:
+            queryinsert ="""insert into sense(usrp,stfreq,tloc,tserv,pwr) values(?,?,?,?,?)"""
+            queryupdate ="""update sense set tloc=?,tserv=?,pwr=? where stfreq=? and usrp=?"""
+  
+
+            if data[:5]=='c1new':
+                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:])
+                params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
+                conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
+                print 'Sensing data for client 1 inserted'          
+            elif data[:5]=='c1old':
+                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = pickle.loads(data[5:]);time_server = datetime.datetime.now()  
+                Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
+                conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
+                print 'Sensing data for client 1 updated'
+            elif data[:5]=='c2new':
+                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:])
+                params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
+                conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
+                print 'Sensing data for client 2 inserted'          
+            elif data[:5]=='c2old':
+                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = pickle.loads(data[5:]);time_server = datetime.datetime.now()  
+                Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
+                conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
+                print 'Sensing data for client 2 updated' 
+            else:
+                print repr(addr) + ' recv:'+ print(data[:5])   
+
      
 
     def response(self,key):
         return 'Server response: ' + 'Wait'
 
     def handler(self,clientsock,addr):
-        global numconn,usrp_address
+        global numconn,usrp_address, conn,isolationlevels,db_filename,schema_filename
         
    
         while 1:
@@ -85,27 +117,15 @@ class server_open_port(object):
                 if "close" == data.rstrip(): break # type 'close' on client console to close connection from the server side
 
             else:
-                print 'Database details\n'
+                print 'Database updation\n'
+                self.updatedb(data)
                 
-                if data[:5]=='c1new':
-                    print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:]);
-                    print 'ctfreq',params.pop();print 'enfreq', params.pop();print 'Address', params.pop();print 'stfreq', params.pop();print 'time local', params.pop();print 'power dbm', params.pop()
-                    
-                elif data[:5]=='c1old':
-                    print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = pickle.loads(data[5:]);time_server = datetime.datetime.now()  
-                    Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
-                    with sqlite3.connect(db_filename,isolation_level = isolationlevels) as conn:
-                        queryinsert ="""insert into sense(usrp,stfreq,tlocal,tserver,pwr) values(?,?,?,?,?)"""
-                        conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
-                        print 'Sesning data inserted'
-                else:
-                    print repr(addr) + ' recv:' + repr(data[:5])   
-
+                
         clientsock.close();numconn.aconn-=1
         print addr, "- closed connection" #log on console
 
 def main():
-    global tnum,numconn,aconn
+    global tnum,numconn,aconn,addr
    
     parser = OptionParser(option_class=eng_option, conflict_handler="resolve")
     parser.add_option("-n", "--conn", type="int", default=2,

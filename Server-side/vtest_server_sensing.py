@@ -22,7 +22,7 @@ import cPickle as pickle
 import pprint
 import datetime
 
-global numconn,BUFF,usrp_address,conn,isolationlevels,db_filename,schema_filename,addr,ack,acknew,ackold
+global numconn,BUFF,usrp_address,conn,isolationlevels,db_filename,schema_filename,addr
 numconn = conn() 
 BUFF=4096;usrp_address=['addr=192.168.30.2', 'addr=192.168.20.2']
 isolationlevels= 'IMMEDIATE'; db_filename ='sense.db';schema_filename = 'sensetable.sql'
@@ -69,12 +69,12 @@ class server_open_port(object):
                 print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:])
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
-                print 'Sensing data for client 1 inserted';acknew+=1          
+                print 'Sensing data for client 1 inserted'       
             elif data[:5]=='c1old':
                 print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = pickle.loads(data[5:]);time_server = datetime.datetime.now()  
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
-                print 'Sensing data for client 1 updated';ackold+=1  
+                print 'Sensing data for client 1 updated' 
             elif data[:5]=='c2new':
                 print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:])
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 

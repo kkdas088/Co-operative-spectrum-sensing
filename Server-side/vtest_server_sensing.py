@@ -20,6 +20,7 @@ import select
 import Queue
 import cPickle as pickle
 import pprint
+import datetime
 
 global numconn,BUFF,usrp_address,conn
 numconn = conn() 
@@ -87,12 +88,16 @@ class server_open_port(object):
                 print 'Database details\n'
                 
                 if data[:5]=='c1new':
-                    print 'Detected first attempt*****************************'; params = pickle.loads(data[5:]);
+                    print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:]);
                     print 'ctfreq',params.pop();print 'enfreq', params.pop();print 'Address', params.pop();print 'stfreq', params.pop();print 'time local', params.pop();print 'power dbm', params.pop()
                     
                 elif data[:5]=='c1old':
-                    print 'update attempt*****************************'; params = pickle.loads(data[5:]);
-                    print 'Address', params.pop();print 'stfreq', params.pop();print 'time local', params.pop();print 'power dbm', params.pop()
+                    print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = pickle.loads(data[5:]);time_server = datetime.datetime.now()  
+                    Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
+                    with sqlite3.connect(db_filename,isolation_level = isolationlevels) as conn:
+                        queryinsert ="""insert into sense(usrp,stfreq,tlocal,tserver,pwr) values(?,?,?,?,?)"""
+                        conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
+                        print 'Sesning data inserted'
                 else:
                     print repr(addr) + ' recv:' + repr(data[:5])   
 

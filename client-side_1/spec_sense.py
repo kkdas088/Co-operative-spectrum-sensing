@@ -386,12 +386,12 @@ def main_loop(tb):
                                                            
                 if (row[0]>0):
                     right_now = datetime.datetime.now()    
-                    #conn.execute(queryupdate,(pwdbm,right_now,stfreq,tb.address))
+                    conn.execute(queryupdate,(pwdbm,right_now,stfreq,tb.address))
                     sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sparams = pickle.dumps(sensing_params)
                     tb.sd.send("c1"+"old"+sparams);del sensing_params[:]
                 else:
                     right_now = datetime.datetime.now()    
-                    #conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address,right_now))
+                    conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address,right_now))
                     sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sensing_params.append(enfreq);sensing_params.append(ctfreq);sparams = pickle.dumps(sensing_params) 
                     tb.sd.send("c1"+"new"+sparams);del sensing_params[:]
             

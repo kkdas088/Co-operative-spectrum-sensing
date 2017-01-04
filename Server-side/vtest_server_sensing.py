@@ -21,7 +21,7 @@ import Queue
 import cPickle as pickle
 import pprint
 
-global numconn,BUFF,usrp_address
+global numconn,BUFF,usrp_address,conn
 numconn = conn() 
 BUFF=4096;usrp_address=['addr=192.168.30.2', 'addr=192.168.20.2']
 
@@ -38,12 +38,32 @@ class server_open_port(object):
         self.server.listen(10)
 
 
+    def setupdb(self):
+        global conn
+        isolationlevels= 'IMMEDIATE'; db_filename ='sense.db';schema_filename = 'sensetable.sql'
+        db_is_new = not os.path.exists(db_filename)
+    
+        with sqlite3.connect(db_filename,isolation_level = isolationlevels) as conn:
+		
+            if db_is_new:
+                print 'creating schema for sensing'
+    
+                with open(schema_filename,'rt') as f:
+                    schema = f.read()
+        
+                conn.executescript(schema)
+
+            else:
+                print'Not reqd'
+     
 
     def response(self,key):
         return 'Server response: ' + 'Wait'
 
     def handler(self,clientsock,addr):
         global numconn,usrp_address
+        
+   
         while 1:
             data = clientsock.recv(BUFF)
             if not data: break
@@ -58,18 +78,30 @@ class server_open_port(object):
                 else:
                     clientsock.send('sense')
                     print repr(addr) + ' sent:' + repr('sense')
+                    
+            
                
                 if "close" == data.rstrip(): break # type 'close' on client console to close connection from the server side
 
             else:
                 print 'Database details\n'
-                print repr(addr) + ' recv:' + repr(data[:5])
+                
+                if data[:5]=='c1new':
+                    print 'Detected first attempt*****************************'; params = pickle.loads(data[5:]);
+                    print 'ctfreq',params.pop()
+                    
+                elif data[:5]=='c1old':
+                    print 'update attempt*****************************'; params = pickle.loads(data[5:]);
+                    print 'Address', params.pop()
+                else:
+                    print repr(addr) + ' recv:' + repr(data[:5])   
 
         clientsock.close();numconn.aconn-=1
         print addr, "- closed connection" #log on console
 
 def main():
     global tnum,numconn,aconn
+   
     parser = OptionParser(option_class=eng_option, conflict_handler="resolve")
     parser.add_option("-n", "--conn", type="int", default=2,
                       help="set number of connections [default=%default]")
@@ -97,7 +129,7 @@ def main():
     numconn.chbw=options.channelbandwidth
  
 
-    op = server_open_port()
+    op = server_open_port();op.setupdb()
    
     while 1:
         print 'waiting for connection...'

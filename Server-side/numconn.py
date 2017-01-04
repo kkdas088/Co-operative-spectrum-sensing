@@ -7,7 +7,7 @@ class conn(object):
         self.conn=2
         self.minfreq=590e6
         self.maxfreq=600e6
-        self.samprate=5e6
+        self.samprate=1e6
         self.gain=19.0
         self.chbw=200e3
         self.aconn=0

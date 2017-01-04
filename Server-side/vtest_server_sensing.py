@@ -59,7 +59,7 @@ class server_open_port(object):
                 print'Not reqd'
 
     def updatedb(self,data):
-        global conn,isolationlevels,db_filename,schema_filename,addr,ack,acknew,ackold
+        global conn,isolationlevels,db_filename,schema_filename,addr
         with sqlite3.connect(db_filename,isolation_level = isolationlevels) as conn:
             queryinsert ="""insert into sense(usrp,stfreq,tloc,tserv,pwr) values(?,?,?,?,?)"""
             queryupdate ="""update sense set tloc=?,tserv=?,pwr=? where stfreq=? and usrp=?"""
@@ -85,9 +85,6 @@ class server_open_port(object):
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
                 print 'Sensing data for client 2 updated' 
-
-            elif data[:4]=='sent':
-                ack+=1;print 'Total ack = %d but acknew = %d and ackold = %d'%(ack,acknew,ackold) 
                  
             else:
                 print repr(addr) + ' recv:'+ repr(data[:5])

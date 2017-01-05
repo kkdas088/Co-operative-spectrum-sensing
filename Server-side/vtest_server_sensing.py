@@ -5,6 +5,7 @@ from gnuradio import eng_notation
 from gnuradio.eng_option import eng_option
 from optparse import OptionParser
 from numconn import conn
+from sensing_params import sparams
 
 import os, sys
 import random, time, struct
@@ -67,14 +68,14 @@ class server_open_port(object):
   
 
             if data[:5]=='c1new':
-                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = json.loads(data[5:])
-                params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
+                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:])
+                Address= params.addr;stfreq= params.stfreq;timelocal= params.right_now;power_dbm= params.pwdbm;time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
                 print 'Sensing data for client 1 inserted'       
             elif data[:5]=='c1old':
-                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = json.loads(data[5:]);time_server = datetime.datetime.now()  
-                Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
-                conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
+                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = pickle.loads(data[5:]);time_server = datetime.datetime.now()  
+                Address= params.addr;stfreq= params.stfreq;timelocal= params.right_now;power_dbm= params.pwdbm;time_server = datetime.datetime.now()
+                conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address)) 
                 print 'Sensing data for client 1 updated' 
             elif data[:5]=='c2new':
                 print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = json.loads(data[5:])

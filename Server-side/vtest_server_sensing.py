@@ -5,7 +5,7 @@ from gnuradio import eng_notation
 from gnuradio.eng_option import eng_option
 from optparse import OptionParser
 from numconn import conn
-from sensing_params import sparams
+from sensingparams import sparams
 
 import os, sys
 import random, time, struct

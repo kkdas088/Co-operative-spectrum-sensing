@@ -33,7 +33,7 @@ from gnuradio import fft
 from gnuradio import uhd
 from gnuradio.eng_option import eng_option
 from optparse import OptionParser
-from sensing_params import sparams
+from sensingparams import sparams
 
 import sys
 import math

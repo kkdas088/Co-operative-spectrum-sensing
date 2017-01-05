@@ -395,7 +395,7 @@ def main_loop(tb):
                     tb.sd.send("c2"+"new"+sparams);del sensing_params[:]
             
                
-            del sensing_params[:]
+         
                     
 
                 

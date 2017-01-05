@@ -33,7 +33,6 @@ from gnuradio import fft
 from gnuradio import uhd
 from gnuradio.eng_option import eng_option
 from optparse import OptionParser
-from sensingparams import sparams
 
 import sys
 import math
@@ -386,21 +385,17 @@ def main_loop(tb):
                 
                
                                                            
-                if (row[0]>0):
+                 if (row[0]>0):
                     right_now = datetime.datetime.now()    
-                    
-                    params.pwdbm=pwdbm;params.right_now=right_now;params.stfreq=stfreq;params.addr=tb.address;pparams = pickle.dumps(params)
-                    tb.sd.send("c1"+"old"+pparams)
                     conn.execute(queryupdate,(pwdbm,right_now,stfreq,tb.address))
+                    sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sparams = pickle.dumps(sensing_params)
+                    tb.sd.send("c1"+"old"+sparams);del sensing_params[:]
                 else:
                     right_now = datetime.datetime.now()    
-                   
-                    params.pwdbm=pwdbm;params.right_now=right_now;params.stfreq=stfreq;params.addr=tb.address;pparams = pickle.dumps(params)
-                    tb.sd.send("c1"+"new"+pparams)
                     conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address,right_now))
-               
-
-                    
+                    sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sensing_params.append(enfreq);sensing_params.append(ctfreq);sparams = pickle.dumps(sensing_params) 
+                    tb.sd.send("c1"+"new"+sparams);del sensing_params[:]
+            
                  
             nsteps -=1
         

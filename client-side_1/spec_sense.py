@@ -51,9 +51,10 @@ import cPickle as pickle
 import json
 
 # logging format 
-params=sparams()
+
 logging.basicConfig(level= logging.DEBUG,format = '%(asctime)s (%(threadName) -10s) %(message)s ')
-        
+global sensing_params
+sensing_params=[]       
 
 class tune(gr.feval_dd):
     """
@@ -385,7 +386,7 @@ def main_loop(tb):
                 
                
                                                            
-                 if (row[0]>0):
+                if (row[0]>0):
                     right_now = datetime.datetime.now()    
                     conn.execute(queryupdate,(pwdbm,right_now,stfreq,tb.address))
                     sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sparams = pickle.dumps(sensing_params)

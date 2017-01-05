@@ -46,7 +46,7 @@ import os
 import datetime
 from  numconn import conn
 import socket
-impor cPickle as pickle
+import cPickle as pickle
 
 # logging format 
 global sensing_params

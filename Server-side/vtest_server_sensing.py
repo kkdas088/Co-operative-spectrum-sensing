@@ -60,7 +60,7 @@ class server_open_port(object):
             else:
                 print'Not reqd'
 
-    def updatedb(self,data):
+    def updatedb(self,data,clientsock):
         global conn,isolationlevels,db_filename,schema_filename,addr
         with sqlite3.connect(db_filename,isolation_level = isolationlevels) as conn:
             queryinsert ="""insert into sense(usrp,stfreq,tloc,tserv,pwr) values(?,?,?,?,?)"""
@@ -68,7 +68,7 @@ class server_open_port(object):
   
 
             if data[:5]=='c1new':
-
+                clientsock.send("ack")
                 print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:])
 
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
@@ -76,7 +76,7 @@ class server_open_port(object):
                 print 'Sensing data for client 1 inserted'
                 
             elif data[:5]=='c1old':
-
+                #clientsock.send("ack")
                 print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = pickle.loads(data[5:]);time_server = datetime.datetime.now()  
 
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
@@ -126,7 +126,7 @@ class server_open_port(object):
 
             else:
                 print 'Database updation\n'
-                self.updatedb(data)
+                self.updatedb(data,clientsock)
                 
                 
         clientsock.close();numconn.aconn-=1

@@ -65,6 +65,10 @@ def main():
                         if 'sense' in op.data:
                             sys.stdout.write('sense\n')
                             op.intiate_sensing()
+
+                        if 'ack' in op.data:
+                            sys.stdout.write('Acknowledged\n')
+                            op.prompt()
                         
                         else:
                             sys.stdout.write('Other than sensing\n');op.paramslist.append(op.data)

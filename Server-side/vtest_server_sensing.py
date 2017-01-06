@@ -134,13 +134,13 @@ class server_open_port(object):
                     fobj = open("somedata", 'wb')
                 print 'Actual data length',len(actual_data)
                 fobj.write(actual_data)
-                return 'Creating data file part-%d'%times
+                print 'Creating data file part-%d'%times
 
 
             elif data[:4]=="Done":
                 print 'File creation complete'
                 fobj.close();times=0
-                f = open('somedata', 'rb');data=pickle.loads(f);print ' Sensing data extracted from file'
+                f = open('somedata', 'rb');data=pickle.load(f);print ' Sensing data extracted from file'
                 self.updatedb(data,clientsock)
 
             else:
@@ -152,7 +152,7 @@ class server_open_port(object):
         print addr, "- closed connection" #log on console
 
 def main():
-    global tnum,numconn,aconn,addr
+    global tnum,numconn,aconn,addr,fobj
    
     parser = OptionParser(option_class=eng_option, conflict_handler="resolve")
     parser.add_option("-n", "--conn", type="int", default=2,

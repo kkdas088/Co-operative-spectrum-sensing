@@ -67,29 +67,29 @@ class server_open_port(object):
             queryupdate ="""update sense set tloc=?,tserv=?,pwr=? where stfreq=? and usrp=?"""
   
 
-            if data[:5]=='c1new':
+            if data.pop()=='c1new':
 
-                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = data[5:]
+                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = data
 
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
                 print 'Sensing data for client 1 start freq %d inserted\n'%(stfreq)
                 clientsock.send('Ack for %d'%(stfreq))
                 
-            elif data[:5]=='c1old':
+            elif data.pop()=='c1old':
                 #clientsock.send("ack")
-                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = data[5:];time_server = datetime.datetime.now()  
+                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = data;time_server = datetime.datetime.now()  
 
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
                 print 'Sensing data for client 1 updated'
-            elif data[:5]=='c2new':
-                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = data[5:]
+            elif data.pop()=='c2new':
+                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = data
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
                 print 'Sensing data for client 2 inserted'          
-            elif data[:5]=='c2old':
-                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = data[5:];time_server = datetime.datetime.now()  
+            elif data.pop()=='c2old':
+                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = data;time_server = datetime.datetime.now()  
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
                 print 'Sensing data for client 2 updated' 
@@ -140,7 +140,7 @@ class server_open_port(object):
             elif data[:4]=="Done":
                 print 'File creation complete'
                 fobj.close();times=0
-                f = open('somedata', 'rb');data=pickle.load(f);print ' Sensing data extracted from file'
+                f = open('somedata', 'rb');data=pickle.load(f);print ' Sensing data extracted from file';subprocess.call("rm somewhat", shell=True)
                 self.updatedb(data,clientsock)
 
             else:

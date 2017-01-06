@@ -24,8 +24,8 @@ import pprint
 import datetime
 import json
 
-global numconn,BUFF,usrp_address,conn,isolationlevels,db_filename,schema_filename,addr
-numconn = conn() 
+global numconn,BUFF,usrp_address,conn,isolationlevels,db_filename,schema_filename,addr,times,fobj
+numconn = conn() ;times=0
 BUFF=4096;usrp_address=['addr=192.168.30.2', 'addr=192.168.20.2']
 isolationlevels= 'IMMEDIATE'; db_filename ='sense.db';schema_filename = 'sensetable.sql'
 
@@ -68,31 +68,33 @@ class server_open_port(object):
   
 
             if data[:5]=='c1new':
-                
-                clientsock.send("ack")
-                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:])
+
+                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = data[5:]
 
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
-                print 'Sensing data for client 1 inserted'
+                print 'Sensing data for client 1 start freq %d inserted\n'%(stfreq)
+                clientsock.send('Ack for %d'%(stfreq))
                 
             elif data[:5]=='c1old':
                 #clientsock.send("ack")
-                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = pickle.loads(data[5:]);time_server = datetime.datetime.now()  
+                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = data[5:];time_server = datetime.datetime.now()  
 
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
                 print 'Sensing data for client 1 updated'
             elif data[:5]=='c2new':
-                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:])
+                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = data[5:]
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
                 print 'Sensing data for client 2 inserted'          
             elif data[:5]=='c2old':
-                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = pickle.loads(data[5:]);time_server = datetime.datetime.now()  
+                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = data[5:];time_server = datetime.datetime.now()  
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
                 print 'Sensing data for client 2 updated' 
+
+           
                  
             else:
                 print repr(addr) + ' recv:'+ repr(data[:5])
@@ -103,7 +105,7 @@ class server_open_port(object):
         return 'Server response: ' + 'Wait'
 
     def handler(self,clientsock,addr):
-        global numconn,usrp_address, conn,isolationlevels,db_filename,schema_filename
+        global numconn,usrp_address, conn,isolationlevels,db_filename,schema_filename,times,fobj
         
    
         while 1:
@@ -125,9 +127,25 @@ class server_open_port(object):
                
                 if "close" == data.rstrip(): break # type 'close' on client console to close connection from the server side
 
-            else:
-                print 'Database updation\n'
+
+            elif data[:4]=="Data":
+                actual_data=data[4:];times+=1
+                if times==1:
+                    fobj = open("somedata", 'wb')
+                print 'Actual data length',len(actual_data)
+                fobj.write(actual_data)
+                return 'Creating data file part-%d'%times
+
+
+            elif data[:4]=="Done":
+                print 'File creation complete'
+                fobj.close();times=0
+                f = open('somedata', 'rb');data=pickle.loads(f);print ' Sensing data extracted from file'
                 self.updatedb(data,clientsock)
+
+            else:
+                print 'Irrelevant\n'
+                
                 
                 
         clientsock.close();numconn.aconn-=1

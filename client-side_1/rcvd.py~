@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+from multiprocessing import Value,Manager
+
+class qack(object):
+    manager= Manager()
+    received = Value('i',0)
+  
+        
+      

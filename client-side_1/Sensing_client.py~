@@ -11,6 +11,7 @@ import os
 import cPickle as pickle
 import pprint
 
+
 class open_port(object):
     
     def __init__(self):
@@ -32,9 +33,10 @@ class open_port(object):
     def intiate_sensing(self):
         print "intiating client  module"
         params = pickle.loads(self.paramslist.pop());print "After de serialization, USRP address", params.addr
-        subprocess.call(" python spec_sense.py  %r  %r --args %s --samp-rate %d --gain %d --socket %d"%(params.minfreq,params.maxfreq,params.addr,params.samprate,params.gain,self.sock.fileno()), shell=True)
-        print "\n ***********************Sensing performed according to data but transmission not done %s******************************\n"%(self.data)
-        return
+        self.process=subprocess.Popen(" python spec_sense.py  %r  %r --args %s --samp-rate %d --gain %d --socket %d "%(params.minfreq,params.maxfreq,params.addr,params.samprate,params.gain,self.sock.fileno()),shell=True)
+        
+        print "returning"
+        return 
 
 
 def main():
@@ -65,10 +67,6 @@ def main():
                         if 'sense' in op.data:
                             sys.stdout.write('sense\n')
                             op.intiate_sensing()
-
-                        if 'ack' in op.data:
-                            sys.stdout.write('sense\n')
-                            op.prompt()
                         
                         else:
                             sys.stdout.write('Other than sensing\n');op.paramslist.append(op.data)

@@ -76,7 +76,7 @@ class server_open_port(object):
                 print 'Sensing data for client 1 inserted'
                 
             elif data[:5]=='c1old':
-                clientsock.send("ack")
+                #clientsock.send("ack")
                 print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = pickle.loads(data[5:]);time_server = datetime.datetime.now()  
 
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()

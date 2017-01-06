@@ -68,6 +68,7 @@ class server_open_port(object):
   
 
             if data[:5]=='c1new':
+                
                 clientsock.send("ack")
                 print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = pickle.loads(data[5:])
 

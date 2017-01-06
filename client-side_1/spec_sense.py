@@ -401,15 +401,19 @@ def main_loop(tb):
                     rowcount+=1;f = open('somedata', 'wb');
                     right_now = datetime.datetime.now()   
                     conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address,right_now))
-                    sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sensing_params.append(enfreq);sensing_params.append(ctfreq);pickle.dumps("c1new",f);pickle.dumps(sensing_params,f)
-                    file_size = str(os.stat("somedata").st_size);print 'file size',file_size;file_size = int(file_size);f= open('somedata', 'rb');
+                    sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sensing_params.append(enfreq)
+                    sensing_params.append(ctfreq);sensing_params.append('c1new')           
+                    pickle.dump(sensing_params,f);f.close()
+                    f= open('somedata', 'rb')
+                    file_size = str(os.stat('somedata').st_size)
+                    file_size = int(file_size);print 'file size',file_size
                     while file_size > 0:
                         buffer = 'Data'+f.read(50)
-                        print 'buffer length',len(buffer)
+                        #print 'buffer length',len(buffer)
                         actual_sent= tb.sd.send(buffer)
                         file_size-= 50
                         time.sleep(0.0001)
-                    print 'done'
+                    #print 'done'
                     tb.sd.send('Done')
                     print'stfreq of %d is %d'%(rowcount, stfreq);del sensing_params[:];subprocess.call("rm somedata",shell=True)
            

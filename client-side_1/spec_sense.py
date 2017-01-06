@@ -408,12 +408,12 @@ def main_loop(tb):
                     file_size = str(os.stat('somedata').st_size)
                     file_size = int(file_size);print 'file size',file_size
                     while file_size > 0:
-                        buffer = 'Data'+f.read(50)
+                        buffer = 'Data'+f.read(100)
                         #print 'buffer length',len(buffer)
                         actual_sent= tb.sd.send(buffer)
-                        file_size-= 50
-                        time.sleep(0.0001)
-                    #print 'done'
+                        file_size-= 100
+                        time.sleep(5)
+                    print 'done'
                     tb.sd.send('Done')
                     print'stfreq of %d is %d'%(rowcount, stfreq);del sensing_params[:];subprocess.call("rm somedata",shell=True)
            

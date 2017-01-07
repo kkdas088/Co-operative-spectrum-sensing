@@ -140,8 +140,11 @@ class server_open_port(object):
             elif data[:4]=="Done":
                 print 'File creation complete'
                 fobj.close();times=0
-                f = open('somedata', 'rb');data=pickle.load(f);print ' Sensing data extracted from file';subprocess.call("rm somewhat", shell=True)
-                self.updatedb(data,clientsock)
+                try:
+                    f = open('somedata', 'rb');data=pickle.load(f);print ' Sensing data extracted from file';subprocess.call("rm somewhat", shell=True)
+                    self.updatedb(data,clientsock)
+                except:
+                    print '**************************************Not able to insert record****************'
 
             else:
                 print 'Irrelevant\n'

@@ -118,7 +118,7 @@ class server_open_port(object):
                 para_string=pickle.dumps(numconn);clientsock.send(para_string);print repr(addr) + ' sent:' + repr('params')
                 checker = bool(numconn.aconn is not numconn.conn);print checker
                 while numconn.aconn!=numconn.conn:
-                    time.sleep(0.0001)   
+                    time.sleep(0.00001)   
                 else:
                     clientsock.send('sense')
                     print repr(addr) + ' sent:' + repr('sense')
@@ -140,8 +140,11 @@ class server_open_port(object):
             elif data[:4]=="Done":
                 print 'File creation complete'
                 fobj.close();times=0
-                f = open('somedata', 'rb');data=pickle.load(f);print ' Sensing data extracted from file';subprocess.call("rm somewhat", shell=True)
-                self.updatedb(data,clientsock)
+                try:
+                    f = open('somedata', 'rb');data=pickle.load(f);print ' Sensing data extracted from file';subprocess.call("rm somewhat", shell=True)
+                    self.updatedb(data,clientsock)
+                except:
+                    print '**************************************Not able to insert records****************'
 
             else:
                 print 'Irrelevant\n'

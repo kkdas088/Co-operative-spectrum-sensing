@@ -69,12 +69,12 @@ class server_open_port(object):
 
             if data.pop()=='c1new':
 
-                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = data
+                print repr(addr) + ' recv:' ; params = data
 
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
                 print 'Sensing data for client 1 start freq %d inserted\n'%(stfreq)
-                clientsock.send('Ack for %d'%(stfreq))
+                
                 
             elif data.pop()=='c1old':
                 #clientsock.send("ack")
@@ -82,7 +82,7 @@ class server_open_port(object):
 
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
-                print 'Sensing data for client 1 updated'
+                print 'Sensing data for client 1 start freq %d updated\n'%(stfreq)
             elif data.pop()=='c2new':
                 print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = data
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
@@ -134,17 +134,19 @@ class server_open_port(object):
                     fobj = open("somedata", 'wb')
                 print 'Actual data length',len(actual_data)
                 fobj.write(actual_data)
-                print 'Creating data file part-%d'%times
+                #print 'Creating data file part-%d'%times
 
 
             elif data[:4]=="Done":
                 print 'File creation complete'
                 fobj.close();times=0
                 try:
-                    f = open('somedata', 'rb');data=pickle.load(f);print ' Sensing data extracted from file';subprocess.call("rm somewhat", shell=True)
+                    f = open('somedata', 'rb');data=pickle.load(f);#print ' Sensing data extracted from file'
+                    subprocess.call("rm somewhat", shell=True)
                     self.updatedb(data,clientsock)
                 except:
-                    print '**************************************Not able to insert records****************'
+                    print '**************************************Not able to insert record**********************************************************************************'
+
 
             else:
                 print 'Irrelevant\n'

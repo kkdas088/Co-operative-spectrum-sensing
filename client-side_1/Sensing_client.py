@@ -33,7 +33,7 @@ class open_port(object):
     def intiate_sensing(self):
         print "intiating client  module"
         params = pickle.loads(self.paramslist.pop());print "After de serialization, USRP address", params.addr
-        self.process=subprocess.Popen(" python spec_sense.py  %r  %r --args %s --samp-rate %d --gain %d --socket %d "%(params.minfreq,params.maxfreq,params.addr,params.samprate,params.gain,self.sock.fileno()),shell=True)
+        self.process=subprocess.call(" python spec_sense.py  %r  %r --args %s --samp-rate %d --gain %d --socket %d "%(params.minfreq,params.maxfreq,params.addr,params.samprate,params.gain,self.sock.fileno()),shell=True)
         
         print "returning"
         return 

@@ -65,30 +65,34 @@ class server_open_port(object):
         with sqlite3.connect(db_filename,isolation_level = isolationlevels) as conn:
             queryinsert ="""insert into sense(usrp,stfreq,tloc,tserv,pwr) values(?,?,?,?,?)"""
             queryupdate ="""update sense set tloc=?,tserv=?,pwr=? where stfreq=? and usrp=?"""
-  
+            
+            segmnt= data.pop()
+            
+            if segmnt=='c1new':
 
-            if data.pop()=='c1new':
-
-                print repr(addr) + ' recv:' ; params = data
+                #print repr(addr) + ' recv:' 
+                params = data
 
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
                 print 'Sensing data for client 1 start freq %d inserted\n'%(stfreq)
                 
                 
-            elif data.pop()=='c1old':
-                #clientsock.send("ack")
-                print repr(addr) + ' recv:' ;params = data;time_server = datetime.datetime.now()  
-
-                Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
+            elif segmnt=='c1old':
+               
+               
+                params = data;time_server = datetime.datetime.now() 
+                Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();               
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
                 print 'Sensing data for client 1 start freq %d updated\n'%(stfreq)
-            elif data.pop()=='c2new':
+
+
+            elif segmnt=='c2new':
                 print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = data
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
                 print 'Sensing data for client 2 inserted'          
-            elif data.pop()=='c2old':
+            elif segmnt=='c2old':
                 print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = data;time_server = datetime.datetime.now()  
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
@@ -132,7 +136,7 @@ class server_open_port(object):
                 actual_data=data[4:];times+=1
                 if times==1:
                     fobj = open("somedata", 'wb')
-                print 'Actual data length',len(actual_data)
+                #print 'Actual data length',len(actual_data)
                 fobj.write(actual_data)
                 #print 'Creating data file part-%d'%times
 
@@ -141,8 +145,7 @@ class server_open_port(object):
                 print 'File creation complete'
                 fobj.close();times=0
                 try:
-                    f = open('somedata', 'rb');data=pickle.load(f);#print ' Sensing data extracted from file'
-                    subprocess.call("rm somewhat", shell=True)
+                    f = open('somedata', 'rb');data=pickle.load(f)
                     self.updatedb(data,clientsock)
                 except:
                     print '**************************************Not able to insert record**********************************************************************************'

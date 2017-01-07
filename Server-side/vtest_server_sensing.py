@@ -70,9 +70,7 @@ class server_open_port(object):
             
             if segmnt=='c1new':
 
-                #print repr(addr) + ' recv:' 
                 params = data
-
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
                 print 'Sensing data for client 1 start freq %d inserted\n'%(stfreq)
@@ -88,15 +86,15 @@ class server_open_port(object):
 
 
             elif segmnt=='c2new':
-                print repr(addr) + ' recv:' ;print 'Detected first attempt*****************************'; params = data
+                params = data
                 params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
                 conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
-                print 'Sensing data for client 2 inserted'          
+                print 'Sensing data for client 2 start freq %d inserted\n'%(stfreq)        
             elif segmnt=='c2old':
-                print repr(addr) + ' recv:' ;print 'update attempt*****************************';params = data;time_server = datetime.datetime.now()  
+                params = data;time_server = datetime.datetime.now()  
                 Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
                 conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
-                print 'Sensing data for client 2 updated' 
+                print 'Sensing data for client 1 start freq %d updated\n'%(stfreq)
 
            
                  

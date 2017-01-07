@@ -1,11 +1,11 @@
 (lp1
-F-124.72958430916444
+F-121.60935678493978
 acdatetime
 datetime
 p2
-(S'\x07\xe1\x01\x07\x12-\x1c\x0bck'
+(S'\x07\xe1\x01\x07\x137\x15\x08\\\xaf'
 tRp3
-aF590200000
+aF599800000
 aS'addr=192.168.20.2'
 p4
 aS'c1old'

@@ -59,21 +59,22 @@ class server_open_port(object):
 
             else:
                 print'Not reqd'
-       
-       db_is_new = not os.path.exists(odb_filename)
+      
 
-       with sqlite3.connect(odb_filename,isolation_level = isolationlevels) as conn1:
+            db_is_new = not os.path.exists(odb_filename)
+
+            with sqlite3.connect(odb_filename,isolation_level = isolationlevels) as conn1:
 		
-            if db_is_new:
-                print 'creating schema for sensing'
+                if db_is_new:
+                    print 'creating schema for  other sensing'
     
-                with open(oschema_filename,'rt') as f:
-                    schema = f.read()
+                    with open(oschema_filename,'rt') as f:
+                        schema = f.read()
         
-                conn1.executescript(schema)
+                    conn1.executescript(schema)
 
-            else:
-                print'Not reqd'
+                else:
+                    print'Not reqd other'
 
     def updatedb(self,data,clientsock):
         global conn,isolationlevels,db_filename,schema_filename,addr,odb_filename,oschema_filename

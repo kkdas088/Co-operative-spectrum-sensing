@@ -49,8 +49,8 @@ import socket
 import cPickle as pickle
 
 # logging format 
-global sensing_params
-sensing_params=[]
+global sensing_params,rowcount
+sensing_params=[];rowcount=0
 logging.basicConfig(level= logging.DEBUG,format = '%(asctime)s (%(threadName) -10s) %(message)s ')
         
 
@@ -339,9 +339,9 @@ def main_loop(tb):
         
         for row in cursor.fetchmany(1):
             if row[0]>0:
-                print"updating"
+                print"updating";rowcount=0
             else:
-                print"inserting"
+                print"inserting";rowcount=0
                        
         nsteps=tb.nsteps
         
@@ -384,24 +384,46 @@ def main_loop(tb):
                
                                                            
                 if (row[0]>0):
+                    
+                    rowcount+=1;f = open('somedata', 'wb');
                     right_now = datetime.datetime.now()    
                     conn.execute(queryupdate,(pwdbm,right_now,stfreq,tb.address))
-                    sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sparams = pickle.dumps(sensing_params)
-                    #tb.sd.send("c2"+"old"+sparams)
-                    del sensing_params[:]
-                else:
-                    right_now = datetime.datetime.now()    
-                    conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address,right_now))
-                    sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sensing_params.append(enfreq);sensing_params.append(ctfreq);sparams = pickle.dumps(sensing_params) 
-                    #tb.sd.send("c2"+"new"+sparams)
-                    del sensing_params[:]
-            
-               
-         
-                    
-
-                
+                    sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sensing_params.append('c2old')    
+                    pickle.dump(sensing_params,f);f.close()
+                    f= open('somedata', 'rb')
+                    file_size = str(os.stat('somedata').st_size)
+                    file_size = int(file_size);print 'file size',file_size
+                    while file_size > 0:
+                        buffer = 'Data'+f.read(100)
+                        #actual_sent= tb.sd.send(buffer)
+                        file_size-= 100
+                        time.sleep(0.1)
+                    print 'done'
+                    #tb.sd.send('Done')
+                    print'********stfreq of %d is %d'%(rowcount, stfreq);del sensing_params[:];subprocess.call("rm somedata",shell=True)
                    
+                        
+                       
+                else:
+                    rowcount+=1;f = open('somedata', 'wb');
+                    right_now = datetime.datetime.now()   
+                    conn.execute(queryinsert,(stfreq,enfreq,ctfreq,pwdbm,tb.address,right_now))
+                    sensing_params.append(pwdbm);sensing_params.append(right_now);sensing_params.append(stfreq);sensing_params.append(tb.address);sensing_params.append(enfreq)
+                    sensing_params.append(ctfreq);sensing_params.append('c2new')           
+                    pickle.dump(sensing_params,f);f.close()
+                    f= open('somedata', 'rb')
+                    file_size = str(os.stat('somedata').st_size)
+                    file_size = int(file_size);print 'file size',file_size
+                    while file_size > 0:
+                        buffer = 'Data'+f.read(100)
+                        #print 'buffer length',len(buffer)
+                        #actual_sent= tb.sd.send(buffer)
+                        file_size-= 100
+                        time.sleep(0.1)
+                    print 'done'
+                    #tb.sd.send('Done')
+                    print'stfreq of %d is %d'%(rowcount, stfreq);del sensing_params[:];subprocess.call("rm somedata",shell=True)
+           
                  
             nsteps -=1
         

@@ -146,6 +146,7 @@ class server_open_port(object):
                 except:
                     print '**************************************Not able to insert record****************'
 
+
             else:
                 print 'Irrelevant\n'
                 

@@ -38,7 +38,7 @@ class server_open_port(object):
         self.server.setsockopt( socket.SOL_SOCKET, socket.SO_REUSEADDR, 1 )
         self.server_address = ('130.233.158.159',16000)
         print ' Port opened up on %s port %s' %self.server_address
-        self.server.bind(self.server_address)
+        self.server.bind(self.server_address);print 'binding'
         self.server.listen(10)
 
 
@@ -236,9 +236,11 @@ if __name__=='__main__':
         main()
  
     except:
-        command ="rm sense{1..2}.db"
-        logging.debug("after interrupt")
-        subprocess.call(command,shell=True)  
+        pass
+        '''if os.path.exists('sense1.db') and os.path.exists('sense2.db'):
+            print 'both db exists and need cleaning'
+            command ="rm sense{1..2}.db"
+            subprocess.call(command,shell=True)  '''
 
 
 

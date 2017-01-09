@@ -59,21 +59,22 @@ class server_open_port(object):
 
             else:
                 print'Not reqd'
-       
-       db_is_new = not os.path.exists(odb_filename)
+      
 
-       with sqlite3.connect(odb_filename,isolation_level = isolationlevels) as conn1:
+            db_is_new = not os.path.exists(odb_filename)
+
+            with sqlite3.connect(odb_filename,isolation_level = isolationlevels) as conn1:
 		
-            if db_is_new:
-                print 'creating schema for sensing'
+                if db_is_new:
+                    print 'creating schema for  other sensing'
     
-                with open(oschema_filename,'rt') as f:
-                    schema = f.read()
+                    with open(oschema_filename,'rt') as f:
+                        schema = f.read()
         
-                conn1.executescript(schema)
+                    conn1.executescript(schema)
 
-            else:
-                print'Not reqd'
+                else:
+                    print'Not reqd other'
 
     def updatedb(self,data,clientsock):
         global conn,isolationlevels,db_filename,schema_filename,addr,odb_filename,oschema_filename
@@ -108,7 +109,7 @@ class server_open_port(object):
                     print repr(addr) + ' recv:'+ repr(data[:5])
 
         if segmnt=='c2new' or segmnt=='c2old': 
-            with sqlite3.connect(odb_filename,isolation_level = isolationlevels) as conn:
+            with sqlite3.connect(odb_filename,isolation_level = isolationlevels) as conn1:
                 queryinsert ="""insert into sense2(usrp,stfreq,tloc,tserv,pwr) values(?,?,?,?,?)"""
                 queryupdate ="""update sense2 set tloc=?,tserv=?,pwr=? where stfreq=? and usrp=?"""
              
@@ -117,13 +118,13 @@ class server_open_port(object):
                 if segmnt=='c2new':
                     params = data
                     params.pop();params.pop();Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop();time_server = datetime.datetime.now() 
-                    conn.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
+                    conn1.execute(queryinsert,(Address,stfreq,timelocal,time_server,power_dbm))
                     print 'Sensing data for client 2 start freq %d inserted\n'%(stfreq)  
       
                 elif segmnt=='c2old':
                     params = data;time_server = datetime.datetime.now()  
                     Address= params.pop();stfreq= params.pop();timelocal= params.pop();power_dbm= params.pop()
-                    conn.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
+                    conn1.execute(queryupdate,(timelocal,time_server,power_dbm,stfreq,Address))
                     print 'Sensing data for client 2 start freq %d updated\n'%(stfreq)
 
            
@@ -165,7 +166,10 @@ class server_open_port(object):
                 if times==1:
                     fobj = open("somedata", 'wb')
                 #print 'Actual data length',len(actual_data)
-                fobj.write(actual_data)
+                try:
+                    fobj.write(actual_data)
+                except:
+                    print 'Cant write data'
                 #print 'Creating data file part-%d'%times
 
 
@@ -217,8 +221,7 @@ def main():
     numconn.chbw=options.channelbandwidth
  
 
-    op = server_open_port();op.setupdb()
-   
+    op = server_open_port();op.setupdb();subprocess.Popen("python sar_plot.py",shell=True);subprocess.Popen("python sar_plot2.py",shell=True)
     while 1:
         print 'waiting for connection...'
         clientsock, addr = op.server.accept()
@@ -228,5 +231,22 @@ def main():
         t.start()
 
 if __name__=='__main__':
-    main()
+
+    try:
+        main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

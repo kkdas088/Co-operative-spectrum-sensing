@@ -445,7 +445,7 @@ if __name__ == '__main__':
     try:
         Main_Data().Inf_run()
           
-    except KeyboardInterrupt:
+    except:
         command ="rm spec.db"
         logging.debug("after interrupt")
         subprocess.call(command,shell=True)

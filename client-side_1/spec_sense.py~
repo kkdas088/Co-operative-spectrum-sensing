@@ -402,7 +402,7 @@ def main_loop(tb):
                         buffer = 'Data'+f.read(250)
                         actual_sent= tb.sd.send(buffer)
                         file_size-= 250
-                        time.sleep(0.1)
+                        time.sleep(0.3)
                     print 'done'
                     tb.sd.send('Done')
                     print'********stfreq of %d is %d'%(rowcount, stfreq);del sensing_params[:];subprocess.call("rm somedata",shell=True)
@@ -424,7 +424,7 @@ def main_loop(tb):
                         #print 'buffer length',len(buffer)
                         actual_sent= tb.sd.send(buffer)
                         file_size-= 250
-                        time.sleep(0.5)
+                        time.sleep(0.3)
                     print 'done'
                     tb.sd.send('Done')
                     print'stfreq of %d is %d'%(rowcount, stfreq);del sensing_params[:];subprocess.call("rm somedata",shell=True)

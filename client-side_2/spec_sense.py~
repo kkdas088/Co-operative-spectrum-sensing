@@ -397,7 +397,7 @@ def main_loop(tb):
                         buffer = 'Data'+f.read(250)
                         actual_sent= tb.sd.send(buffer)
                         file_size-= 250
-                        time.sleep(0.1)
+                        time.sleep(0.5)
                     print 'done'
                     tb.sd.send('Done')
                     print'********stfreq of %d is %d'%(rowcount, stfreq);del sensing_params[:];subprocess.call("rm somedata",shell=True)
@@ -419,7 +419,7 @@ def main_loop(tb):
                         #print 'buffer length',len(buffer)
                         actual_sent= tb.sd.send(buffer)
                         file_size-= 250
-                        time.sleep(0.1)
+                        time.sleep(0.5)
                     print 'done'
                     tb.sd.send('Done')
                     print'stfreq of %d is %d'%(rowcount, stfreq);del sensing_params[:];subprocess.call("rm somedata",shell=True)
@@ -430,7 +430,7 @@ def main_loop(tb):
         
             
                                                         
-class Main_Data(object):
+class Main_Data(object):nan
 
     def Inf_run(self):
         tb = my_top_block()
@@ -445,7 +445,7 @@ if __name__ == '__main__':
     try:
         Main_Data().Inf_run()
           
-    except KeyboardInterrupt:
+    except:
         command ="rm spec.db"
         logging.debug("after interrupt")
         subprocess.call(command,shell=True)

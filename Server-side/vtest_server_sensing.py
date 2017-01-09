@@ -231,5 +231,27 @@ def main():
         t.start()
 
 if __name__=='__main__':
-    main()
+
+    try:
+        main()
+ 
+    except:
+        command ="rm sense{1..2}.db"
+        logging.debug("after interrupt")
+        subprocess.call(command,shell=True)  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

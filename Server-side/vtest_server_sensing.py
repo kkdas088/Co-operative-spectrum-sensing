@@ -166,7 +166,10 @@ class server_open_port(object):
                 if times==1:
                     fobj = open("somedata", 'wb')
                 #print 'Actual data length',len(actual_data)
-                fobj.write(actual_data)
+                try:
+                    fobj.write(actual_data)
+                except:
+                    print 'Cant write data'
                 #print 'Creating data file part-%d'%times
 
 
@@ -218,8 +221,7 @@ def main():
     numconn.chbw=options.channelbandwidth
  
 
-    op = server_open_port();op.setupdb()
-   
+    op = server_open_port();op.setupdb();subprocess.Popen("python sar_plot.py",shell=True);subprocess.Popen("python sar_plot2.py",shell=True)
     while 1:
         print 'waiting for connection...'
         clientsock, addr = op.server.accept()

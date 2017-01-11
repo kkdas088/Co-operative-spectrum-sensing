@@ -236,11 +236,11 @@ if __name__=='__main__':
         main()
  
     except:
-        pass
-        '''if os.path.exists('sense1.db') and os.path.exists('sense2.db'):
+        
+        if os.path.exists('sense1.db') and os.path.exists('sense2.db'):
             print 'both db exists and need cleaning'
-            command ="rm sense{1..2}.db"
-            subprocess.call(command,shell=True)  '''
+            command ="rm sense1.db sense2.db"
+            subprocess.call(command,shell=True)  
 
 
 
